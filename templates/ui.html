@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>System Info - Demo App</title>
+        <link rel="icon" href="/static/fa-cloud.svg">
+        <link href=https://fonts.googleapis.com/css?family=Fira+Sans:300,400,500,700,300italic,400italic,500italic,700italic rel=stylesheet>
+        <link href=https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic rel=stylesheet>
+        <link href=https://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,500,600,700,900 rel=stylesheet>
+        <link href="/static/fontawesome/css/all.min.css" rel="stylesheet">
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous"></script>
+        <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+        <link href="/static/css/style.css" rel="stylesheet">
+        <link href="/static/css/data-buttons.css" rel="stylesheet">
+        <style>
+
+        </style>
+    </head>
+    <body>
+        <h1>Some data about the underlying system</h1>
+        <pre class="apiCommand">curl -s <span id="apiHost"></span> | python3 -m json.tool</pre>
+        <a href=# data-button="green" id="reloadbtn"><i class="fa fa-sync"></i> Reload</a>
+        <a href="/api" data-button="blue"><i class="fas fa-angle-double-right"></i> API</a>
+        <pre id="sysinfo"></pre>
+        <div id="prettyinfo"></div>
+        <script>
+            $( "#apiHost" ).html(window.location.href.replace('/ui', '/api').replace('#',''));
+            function load() {
+                $.getJSON( "/api", function( data ) {
+                    var items = [];
+                    $.each( data, function( key, val ) {
+                        items.push( "<li id='" + key + "'><b>" + key + "</b>: " + val + "</li>" );
+                    });
+                    $( "<ul/>", {
+                        "class": "my-new-list",
+                        html: items.join( "" )
+                    }).appendTo( "#prettyinfo" );
+
+                    $( "#sysinfo" ).append(JSON.stringify(data, null, 2));
+                });
+            }
+
+            $( "#reloadbtn" ).click(function() {
+                $( "#sysinfo" ).html("");
+                $( "#prettyinfo" ).html("");
+                setTimeout(function(){
+                    load();
+                }, 100);
+            });
+            load(); // onload
+        </script>
+    </body>
+</html>
