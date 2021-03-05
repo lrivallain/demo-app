@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# wait for internet
+while ! ping -c 1 -W 1 1.1.1.1; do
+    echo "Waiting for internet connectivity"
+    sleep 1
+done
+
 apt update -qqy
 apt install -qqy python3-pip
 
